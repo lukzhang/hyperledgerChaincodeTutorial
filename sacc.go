@@ -49,3 +49,40 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 	//REturn result as success payload
 	return shim.Success([]byte(result))
 }
+
+//Set stores the asset with both key and val on ledger. If key exists, it'll
+//override val with new val
+func set(stub shim.ChaincodeStubINterface, args []string) (string, error) {
+	if len(args) != 2 {
+		return "", fmt.Errorf("inccorect args. expecting key and val")
+	}
+
+	err := stub.PutState(args[0], []byte(args[1]))
+	if err != nil {
+		return "", fmt.Errorf("failed to set asset: %s", args[0])
+	}
+	return args[1], nil
+}
+
+//Get returns val of specified asset key
+func get(stub shim.ChaincodeStubInterface, args []string) (string, error) {
+	if len(args) != 1 {
+		return "", fmt.Errorf("Inccorect args. expecting key")
+	}
+
+	value, err := stub.GetState(args[0])
+	if err != nil {
+		return "", fmt.Errorf("failed to get assets: %s wtih err: %s", args[0], err)
+	}
+	if value == nil {
+		return "", fmt.Errorf("asset not found; %s", args[0])
+	}
+	return string(value), nil
+}
+
+//main f'n starts up chaincode in container during instantiate
+func main() {
+	if err := shim.Start(new(SimpleAsset)); err != nil {
+		fmt.Printf("error starting simpleasset chaincode: %s", err)
+	}
+}
