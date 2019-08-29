@@ -52,7 +52,7 @@ func (t *SimpleAsset) Invoke(stub shim.ChaincodeStubInterface) peer.Response {
 
 //Set stores the asset with both key and val on ledger. If key exists, it'll
 //override val with new val
-func set(stub shim.ChaincodeStubINterface, args []string) (string, error) {
+func set(stub shim.ChaincodeStubInterface, args []string) (string, error) {
 	if len(args) != 2 {
 		return "", fmt.Errorf("inccorect args. expecting key and val")
 	}
