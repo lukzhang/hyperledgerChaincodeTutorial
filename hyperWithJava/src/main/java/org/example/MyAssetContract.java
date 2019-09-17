@@ -8,6 +8,9 @@ import org.hyperledger.fabric.contract.ContractInterface;
 import org.hyperledger.fabric.contract.annotation.Contract;
 import org.hyperledger.fabric.contract.annotation.Default;
 import org.hyperledger.fabric.contract.annotation.Transaction;
+
+import main.java.org.example.LukesAsset;
+
 import org.hyperledger.fabric.contract.annotation.Contact;
 import org.hyperledger.fabric.contract.annotation.Info;
 import org.hyperledger.fabric.contract.annotation.License;
@@ -30,17 +33,34 @@ public class MyAssetContract implements ContractInterface {
     }
     //**********Luke's added stuff */
     @Transaction()
-    public String hiWorld(Context ctx, String myAssetId){
-        boolean exists = myAssetExists(ctx,myAssetId);
-        if (!exists) {
-            throw new RuntimeException("The asset "+myAssetId+" does not exist");
-        }
+    public void createMsg(Context ctx, String msg, int age, String myAssetId){
 
-        String greeting = new String(ctx.getStub().getFunction());
-
-        MyAsset newAsset = MyAsset.fromJSONString(new String(ctx.getStub().getState(myAssetId),UTF_8));
-        return newAsset;
+        //Do I need to add assetID to make it unique?
+        LukesAsset luke = new LukesAsset(msg, age);
+        
+        ctx.getStub().putState(myAssetId, luke.toJSONString().getBytes(UTF_8));
     }
+
+    @Transaction()
+    public String readMyMsg(Context ctx, String myAssetId) {
+
+        LukesAsset newAsset = LukesAsset.fromJSONString(new String(ctx.getStub().getState(myAssetId),UTF_8));   //NEED TO USE myAssetId????
+        return newAsset.getMsg();
+    }
+
+
+    //Note: Without stub, does not interact with state...
+    // public String hiWorld(Context ctx, String myAssetId){
+    //     boolean exists = myAssetExists(ctx,myAssetId);
+    //     if (!exists) {
+    //         throw new RuntimeException("The asset "+myAssetId+" does not exist");
+    //     }
+
+    //     String greeting = new String(ctx.getStub().getFunction());
+
+    //     MyAsset newAsset = MyAsset.fromJSONString(new String(ctx.getStub().getState(myAssetId),UTF_8));
+    //     return newAsset;
+    // }
 
     // @Transaction()
     // public boolean ownerIdExists(Context ctx, String myAssetId, int ownerID){

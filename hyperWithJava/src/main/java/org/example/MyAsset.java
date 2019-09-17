@@ -10,6 +10,8 @@ import org.hyperledger.fabric.contract.annotation.DataType;
 import org.hyperledger.fabric.contract.annotation.Property;
 import org.json.JSONObject;
 
+import main.java.org.example.LukesAsset;
+
 @DataType()
 public class MyAsset {
 
@@ -22,7 +24,7 @@ public class MyAsset {
         ownerIDs=new ArrayList<Integer>();
     }
 
-    //******Luke's added stuff */
+    //******Luke's added stuff */    
     public String helloWorld(){
         return "Hello World";
     }
